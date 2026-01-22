@@ -44,7 +44,7 @@ fi
 # ----------------------------------------
 # Stow packages
 # ----------------------------------------
-PACKAGES=(zsh git nvim yazi mise)
+PACKAGES=(zsh git nvim yazi mise tmux)
 
 stow_package() {
   local pkg=$1
