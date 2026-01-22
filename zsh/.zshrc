@@ -31,26 +31,9 @@ setopt share_history
 alias history='fc -lt "%F %T" 1'
 
 # ============================================================
-#   Powerline Shell
+#   Completions (early init for tools that need compdef)
 # ============================================================
-
-function powerline_precmd() {
-  PS1="$(powerline-shell --shell zsh $?)
->++(°> "
-}
-
-function install_powerline_precmd() {
-  for s in "${precmd_functions[@]}"; do
-    if [ "$s" = "powerline_precmd" ]; then
-      return
-    fi
-  done
-  precmd_functions+=(powerline_precmd)
-}
-
-if [ "$TERM" != "linux" ]; then
-  install_powerline_precmd
-fi
+autoload -Uz compinit && compinit
 
 # ============================================================
 #   Aliases
@@ -128,8 +111,6 @@ confirm_command() {
 #   Zinit Plugin Manager
 # ============================================================
 
-autoload -Uz compinit && compinit
-
 if [[ ! -f $HOME/.local/share/zinit/zinit.git/zinit.zsh ]]; then
   print -P "%F{33} %F{220}Installing %F{33}ZDHARMA-CONTINUUM%F{220} Initiative Plugin Manager (%F{33}zdharma-continuum/zinit%F{220})…%f"
   command mkdir -p "$HOME/.local/share/zinit" && command chmod g-rwX "$HOME/.local/share/zinit"
@@ -160,6 +141,11 @@ zinit light zsh-users/zsh-completions
 
 autoload -U +X bashcompinit && bashcompinit
 complete -o nospace -C /opt/homebrew/bin/terraform terraform
+
+# ============================================================
+#   Starship Prompt
+# ============================================================
+eval "$(starship init zsh)"
 
 # ============================================================
 #   Local Settings (tokens, secrets, etc.)

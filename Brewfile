@@ -11,6 +11,7 @@ brew "fzf"
 brew "tree-sitter"
 brew "colordiff"
 brew "jq"
+brew "starship"
 
 # Runtime Version Manager
 brew "mise"
@@ -28,3 +29,6 @@ brew "zoxide"          # Smarter cd command
 # cask "google-chrome"
 # cask "slack"
 # cask "docker"
+
+# Terminal
+cask "iterm2"
