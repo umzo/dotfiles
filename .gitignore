@@ -1,0 +1,9 @@
+# Local settings (contain secrets)
+*.local
+
+# macOS
+.DS_Store
+
+# Neovim
+nvim/plugin/
+nvim/lazy-lock.json
