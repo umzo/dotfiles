@@ -25,6 +25,23 @@ if ! command -v stow &> /dev/null; then
 fi
 
 # ----------------------------------------
+# Install tmux
+# ----------------------------------------
+echo "Checking tmux..."
+
+if ! command -v tmux &> /dev/null; then
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    echo "  Installing tmux via Homebrew..."
+    brew install tmux
+  elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    echo "  Installing tmux via apt..."
+    sudo apt install -y tmux
+  fi
+else
+  echo "  tmux already installed"
+fi
+
+# ----------------------------------------
 # Stow packages
 # ----------------------------------------
 PACKAGES=(zsh git nvim yazi mise)
