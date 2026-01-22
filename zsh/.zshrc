@@ -67,6 +67,15 @@ else
   alias diff='diff -u'
 fi
 
+# yazi
+function y() {
+  export YAZI_START_DIR="$PWD"
+  yazi "$@"
+}
+
+# zoxide
+eval "$(zoxide init zsh)"
+
 # ============================================================
 #   Safety Functions
 # ============================================================

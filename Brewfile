@@ -19,6 +19,10 @@ brew "mise"
 brew "gh"              # GitHub CLI
 brew "lazygit"         # Git TUI
 
+# File Manager & Navigation
+brew "yazi"            # Terminal file manager
+brew "zoxide"          # Smarter cd command
+
 # Applications (optional - uncomment as needed)
 # cask "cursor"
 # cask "google-chrome"

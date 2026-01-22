@@ -1,0 +1,15 @@
+# ============================================================
+#   Yazi Keymap Configuration
+# ============================================================
+
+[[mgr.prepend_keymap]]
+on = [ "c", "r" ]
+run = '''
+    shell -- python3 -c "import os,sys; print(os.path.relpath(sys.argv[1], os.environ.get('YAZI_START_DIR', os.getcwd())), end='')" "$@" | pbcopy
+'''
+desc = "Copy relative path from start dir"
+
+[[mgr.prepend_keymap]]
+on = ["g", "s"]
+run = 'cd "$YAZI_START_DIR"'
+desc = "Go to starting directory"

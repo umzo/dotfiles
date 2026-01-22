@@ -30,6 +30,18 @@ fi
 ln -sf "$DOTFILES_DIR/nvim" "$HOME/.config/nvim"
 
 # ----------------------------------------
+# Yazi
+# ----------------------------------------
+echo "📝 Setting up yazi..."
+
+if [ -d "$HOME/.config/yazi" ] && [ ! -L "$HOME/.config/yazi" ]; then
+  echo "   Backing up existing yazi config..."
+  mv "$HOME/.config/yazi" "$HOME/.config/yazi.backup.$(date +%Y%m%d%H%M%S)"
+fi
+
+ln -sf "$DOTFILES_DIR/yazi" "$HOME/.config/yazi"
+
+# ----------------------------------------
 # Git
 # ----------------------------------------
 echo "📝 Setting up git..."
