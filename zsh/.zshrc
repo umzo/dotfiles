@@ -76,6 +76,9 @@ function y() {
 # zoxide
 eval "$(zoxide init zsh)"
 
+# wtp
+eval "$(wtp shell-init zsh)"
+
 # ============================================================
 #   Safety Functions
 # ============================================================
@@ -157,13 +160,6 @@ zinit light zsh-users/zsh-completions
 
 autoload -U +X bashcompinit && bashcompinit
 complete -o nospace -C /opt/homebrew/bin/terraform terraform
-
-# ============================================================
-#   Google Cloud SDK
-# ============================================================
-
-[[ -f "$HOME/google-cloud-sdk/path.zsh.inc" ]] && source "$HOME/google-cloud-sdk/path.zsh.inc"
-[[ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]] && source "$HOME/google-cloud-sdk/completion.zsh.inc"
 
 # ============================================================
 #   Local Settings (tokens, secrets, etc.)

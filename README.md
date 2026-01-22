@@ -11,6 +11,31 @@ chmod +x setup.sh
 ./setup.sh
 ```
 
+## 初回セットアップ（手動）
+
+### 開発用APFSボリュームの作成
+
+大文字/小文字を区別するAPFSボリュームを作成する：
+
+**ディスクユーティリティを使用：**
+1. ディスクユーティリティを開く
+2. コンテナ（例: "Macintosh HD"）を選択
+3. 「+」をクリックしてボリュームを追加
+4. 名前: `Develop`
+5. フォーマット: APFS（大文字/小文字を区別）
+6. 暗号化: なし
+
+**ターミナルを使用：**
+```bash
+# ディスク識別子を確認
+diskutil list
+
+# ボリュームを作成（disk3は環境に合わせて変更）
+diskutil apfs addVolume disk3 "Case-sensitive APFS" Develop
+```
+
+ボリュームは `/Volumes/Develop` にマウントされる。
+
 ## Structure
 
 ```
@@ -25,9 +50,12 @@ dotfiles/
 │   └── lua/
 │       ├── config/
 │       └── plugins/
-└── git/
-    ├── .gitconfig
-    └── .gitconfig.local.example
+├── git/
+│   ├── .gitconfig
+│   └── .gitconfig.local.example
+├── yazi/                 # Yaziファイルマネージャー設定
+└── mise/
+    └── config.toml       # mise設定（trusted_config_paths等）
 ```
 
 ## Local Settings

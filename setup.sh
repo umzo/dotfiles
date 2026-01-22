@@ -33,7 +33,7 @@ if [ -d "$HOME/.config/nvim" ] && [ ! -L "$HOME/.config/nvim" ]; then
   mv "$HOME/.config/nvim" "$HOME/.config/nvim.backup.$(date +%Y%m%d%H%M%S)"
 fi
 
-ln -sf "$DOTFILES_DIR/nvim" "$HOME/.config/nvim"
+ln -sfn "$DOTFILES_DIR/nvim" "$HOME/.config/nvim"
 
 # ----------------------------------------
 # Yazi
@@ -45,7 +45,7 @@ if [ -d "$HOME/.config/yazi" ] && [ ! -L "$HOME/.config/yazi" ]; then
   mv "$HOME/.config/yazi" "$HOME/.config/yazi.backup.$(date +%Y%m%d%H%M%S)"
 fi
 
-ln -sf "$DOTFILES_DIR/yazi" "$HOME/.config/yazi"
+ln -sfn "$DOTFILES_DIR/yazi" "$HOME/.config/yazi"
 
 # ----------------------------------------
 # Git
@@ -76,12 +76,27 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 
   echo "   Installing packages from Brewfile..."
   brew bundle --file="$DOTFILES_DIR/Brewfile" || true
+
+  echo "   Installing wtp..."
+  brew install satococoa/tap/wtp
 fi
 
 # ----------------------------------------
 # mise (runtime version manager)
 # ----------------------------------------
+echo "📝 Setting up mise..."
+mkdir -p "$HOME/.config/mise"
+
+if [ -f "$HOME/.config/mise/config.toml" ] && [ ! -L "$HOME/.config/mise/config.toml" ]; then
+  echo "   Backing up existing mise config..."
+  mv "$HOME/.config/mise/config.toml" "$HOME/.config/mise/config.toml.backup.$(date +%Y%m%d%H%M%S)"
+fi
+
+ln -sf "$DOTFILES_DIR/mise/config.toml" "$HOME/.config/mise/config.toml"
+
 if command -v mise &> /dev/null; then
+  echo "   Trusting mise config..."
+  mise trust "$DOTFILES_DIR/mise/config.toml"
   echo "📦 Setting up mise..."
   mise use -g node@24
 
