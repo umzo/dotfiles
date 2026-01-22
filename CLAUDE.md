@@ -4,7 +4,7 @@
 
 ## 概要
 
-シンボリックリンク方式で設定ファイルを管理し、新しいマシンで `./setup.sh` を実行するだけで環境を再現できるようにしています。
+GNU Stowを使ってシンボリックリンク方式で設定ファイルを管理し、新しいマシンで `./setup.sh` を実行するだけで環境を再現できるようにしています。
 
 ## ディレクトリ構成
 
@@ -15,17 +15,27 @@ dotfiles/
 ├── .gitignore
 ├── README.md
 ├── CLAUDE.md
-├── zsh/
-│   ├── .zshrc                  # Zsh設定
-│   └── .zshrc.local.example    # ローカル設定テンプレート
-├── nvim/                       # Neovim設定 (LazyVim)
-│   ├── init.lua
-│   └── lua/
-│       ├── config/
-│       └── plugins/
-└── git/
-    ├── .gitconfig              # Git設定
-    └── .gitconfig.local.example
+├── zsh/                        # stowパッケージ: zsh
+│   ├── .zshrc
+│   └── .zshrc.local.example
+├── git/                        # stowパッケージ: git
+│   ├── .gitconfig
+│   └── .gitconfig.local.example
+├── nvim/                       # stowパッケージ: nvim
+│   └── .config/
+│       └── nvim/
+│           ├── init.lua
+│           └── lua/
+│               ├── config/
+│               └── plugins/
+├── yazi/                       # stowパッケージ: yazi
+│   └── .config/
+│       └── yazi/
+│           └── keymap.toml
+└── mise/                       # stowパッケージ: mise
+    └── .config/
+        └── mise/
+            └── config.toml
 ```
 
 ## 設計原則
@@ -42,15 +52,16 @@ dotfiles/
 export GITHUB_TOKEN="ghp_xxxxx"
 ```
 
-### 2. 既存ファイルのバックアップ
+### 2. 既存ファイルのスキップ
 
-setup.sh実行時、既存ファイルは上書きせずバックアップを作成する。
+setup.sh実行時、既存ファイルがある場合はスキップしてログ出力する。
 
 ```bash
-if [ -f "$HOME/.zshrc" ] && [ ! -L "$HOME/.zshrc" ]; then
-  mv "$HOME/.zshrc" "$HOME/.zshrc.backup.$(date +%Y%m%d%H%M%S)"
+# stow --simulate でコンフリクトをチェック
+if ! stow -d "$DOTFILES_DIR" -t "$HOME" --simulate "$pkg" 2>/dev/null; then
+  echo "  [SKIP] $pkg: existing files found, skipping"
+  return
 fi
-ln -sf "$DOTFILES_DIR/zsh/.zshrc" "$HOME/.zshrc"
 ```
 
 ### 3. 冪等性
@@ -60,7 +71,7 @@ ln -sf "$DOTFILES_DIR/zsh/.zshrc" "$HOME/.zshrc"
 ```bash
 # 良い例：存在チェック
 if [ ! -f "$HOME/.zshrc.local" ]; then
-  cp "$DOTFILES_DIR/.zshrc.local.example" "$HOME/.zshrc.local"
+  cp "$DOTFILES_DIR/zsh/.zshrc.local.example" "$HOME/.zshrc.local"
 fi
 
 # 悪い例：毎回追記される
@@ -77,44 +88,59 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   brew bundle --file="$DOTFILES_DIR/Brewfile"
 elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
   # Linux
-  sudo apt install -y ripgrep fd-find
+  sudo apt install -y stow ripgrep fd-find
 fi
 ```
 
-### 5. シンボリックリンク方式
+### 5. GNU Stowによるシンボリックリンク管理
 
-コピーではなくシンボリックリンクを使用。変更が即座に反映される。
-
-**重要：ディレクトリへのリンクは `ln -sfn` を使用する**
+GNU Stowを使用してシンボリックリンクを管理する。各パッケージ（zsh, git, nvim等）は、展開後の構造をそのままディレクトリに持つ。
 
 ```bash
-# 良い例：-n オプションでディレクトリへのリンクを正しく上書き
-ln -sfn "$DOTFILES_DIR/nvim" "$HOME/.config/nvim"
+# $HOME直下に展開されるもの（zsh, git）
+zsh/
+└── .zshrc          → $HOME/.zshrc
 
-# 悪い例：2回目の実行で循環リンクが発生する
-ln -sf "$DOTFILES_DIR/nvim" "$HOME/.config/nvim"
-# → ~/.config/nvim/nvim → ~/dotfiles/nvim という循環リンクが作成される
+# $HOME/.config以下に展開されるもの（nvim, yazi, mise）
+nvim/
+└── .config/
+    └── nvim/
+        └── init.lua  → $HOME/.config/nvim/init.lua
 ```
 
-`-n` オプションがないと、ターゲットがシンボリックリンク（ディレクトリを指す）の場合、その**中に**リンクを作成してしまう。
+**stowコマンドの使い方**
+
+```bash
+# パッケージをリンク
+stow -d ~/dotfiles -t "$HOME" zsh
+
+# パッケージをアンリンク
+stow -d ~/dotfiles -t "$HOME" -D zsh
+
+# ドライラン（実行前に確認）
+stow -d ~/dotfiles -t "$HOME" --simulate zsh
+```
 
 ## setup.shの実装ルール
 
 1. `set -e` でエラー時に即停止
 2. `DOTFILES_DIR` は絶対パスで取得
-3. 既存ファイルはバックアップしてからリンク作成
-4. `.local` ファイルは存在しない場合のみテンプレートからコピー
-5. ログ出力で進捗を表示
-6. 最後に次のステップを案内
+3. stowがなければインストール
+4. `stow --simulate` でコンフリクトチェック、既存ファイルがあればスキップ
+5. `.local` ファイルは存在しない場合のみテンプレートからコピー
+6. ログ出力で進捗を表示
+7. 最後に次のステップを案内
 
 ## ファイル追加時のチェックリスト
 
 新しい設定ファイルを追加する際：
 
-- [ ] 適切なディレクトリに配置（ツールごとに分ける）
+- [ ] 適切なstowパッケージディレクトリに配置
+  - `$HOME`直下のファイル: `パッケージ名/.ファイル名`
+  - `$HOME/.config`以下: `パッケージ名/.config/アプリ名/ファイル`
 - [ ] 秘密情報は `.local` ファイルに分離
 - [ ] `.local.example` テンプレートを用意
-- [ ] setup.shにバックアップ＆リンク処理を追加
+- [ ] setup.shのPACKAGES配列にパッケージ名を追加
 - [ ] .gitignoreに `.local` パターンを追加
 - [ ] README.mdを更新
 
@@ -149,6 +175,9 @@ nvim → :Mason
 
 # 設定変更後の反映
 source ~/.zshrc
+
+# 特定パッケージのアンリンク
+stow -d ~/dotfiles -t "$HOME" -D パッケージ名
 ```
 
 ## トラブルシューティング
@@ -156,6 +185,21 @@ source ~/.zshrc
 ### nvim初回起動でエラー
 
 Masonの並列インストール競合。2回目の起動で解消される。
+
+### stowでコンフリクトエラー
+
+既存ファイルがある場合に発生。手動で削除またはバックアップしてから再実行。
+
+```bash
+# 既存ファイルを確認
+ls -la ~/.zshrc
+
+# バックアップして削除
+mv ~/.zshrc ~/.zshrc.bak
+
+# 再実行
+./setup.sh
+```
 
 ### シンボリックリンクが切れた
 

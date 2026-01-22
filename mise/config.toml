@@ -1,5 +1,2 @@
-[settings]
-trusted_config_paths = ["/Volumes/Develop", "~/dotfiles"]
-
 [tools]
 node = "24"
