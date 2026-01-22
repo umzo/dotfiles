@@ -6,22 +6,40 @@ DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
 echo "Setting up dotfiles..."
 
 # ----------------------------------------
+# Install Homebrew (macOS)
+# ----------------------------------------
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  echo "Checking Homebrew..."
+  if ! command -v brew &> /dev/null; then
+    echo "  Installing Homebrew..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+    # Add Homebrew to PATH for this session
+    if [[ -f "/opt/homebrew/bin/brew" ]]; then
+      eval "$(/opt/homebrew/bin/brew shellenv)"
+    elif [[ -f "/usr/local/bin/brew" ]]; then
+      eval "$(/usr/local/bin/brew shellenv)"
+    fi
+  else
+    echo "  Homebrew already installed"
+  fi
+fi
+
+# ----------------------------------------
 # Install stow
 # ----------------------------------------
 echo "Checking stow..."
 
 if ! command -v stow &> /dev/null; then
   if [[ "$OSTYPE" == "darwin"* ]]; then
-    if ! command -v brew &> /dev/null; then
-      echo "  Installing Homebrew..."
-      /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    fi
     echo "  Installing stow via Homebrew..."
     brew install stow
   elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
     echo "  Installing stow via apt..."
     sudo apt update && sudo apt install -y stow
   fi
+else
+  echo "  stow already installed"
 fi
 
 # ----------------------------------------
