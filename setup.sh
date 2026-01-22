@@ -9,6 +9,12 @@ echo "🚀 Setting up dotfiles..."
 # Zsh
 # ----------------------------------------
 echo "📝 Setting up zsh..."
+
+if [ -f "$HOME/.zshrc" ] && [ ! -L "$HOME/.zshrc" ]; then
+  echo "   Backing up existing .zshrc..."
+  mv "$HOME/.zshrc" "$HOME/.zshrc.backup.$(date +%Y%m%d%H%M%S)"
+fi
+
 ln -sf "$DOTFILES_DIR/zsh/.zshrc" "$HOME/.zshrc"
 
 if [ ! -f "$HOME/.zshrc.local" ]; then
@@ -45,6 +51,12 @@ ln -sf "$DOTFILES_DIR/yazi" "$HOME/.config/yazi"
 # Git
 # ----------------------------------------
 echo "📝 Setting up git..."
+
+if [ -f "$HOME/.gitconfig" ] && [ ! -L "$HOME/.gitconfig" ]; then
+  echo "   Backing up existing .gitconfig..."
+  mv "$HOME/.gitconfig" "$HOME/.gitconfig.backup.$(date +%Y%m%d%H%M%S)"
+fi
+
 ln -sf "$DOTFILES_DIR/git/.gitconfig" "$HOME/.gitconfig"
 
 if [ ! -f "$HOME/.gitconfig.local" ]; then
