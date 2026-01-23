@@ -1,0 +1,11 @@
+# bat configuration
+# See: https://github.com/sharkdp/bat#configuration-file
+
+# Theme (run `bat --list-themes` to see all)
+--theme="Catppuccin Mocha"
+
+# Show line numbers, Git changes, and header
+--style="numbers,changes,header"
+
+# Use italic text (if terminal supports it)
+--italic-text=always

@@ -62,7 +62,7 @@ fi
 # ----------------------------------------
 # Stow packages
 # ----------------------------------------
-PACKAGES=(zsh git nvim yazi mise tmux starship iterm2 sheldon)
+PACKAGES=(zsh git nvim yazi mise tmux starship iterm2 sheldon bat)
 
 stow_package() {
   local pkg=$1
