@@ -62,7 +62,7 @@ fi
 # ----------------------------------------
 # Stow packages
 # ----------------------------------------
-PACKAGES=(zsh git nvim yazi mise tmux starship)
+PACKAGES=(zsh git nvim yazi mise tmux starship iterm2)
 
 stow_package() {
   local pkg=$1
@@ -108,6 +108,16 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   echo "Installing Homebrew packages..."
   brew bundle --file="$DOTFILES_DIR/Brewfile" || true
   brew install satococoa/tap/wtp || true
+fi
+
+# ----------------------------------------
+# iTerm2 (macOS)
+# ----------------------------------------
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  echo "Configuring iTerm2..."
+  defaults write com.googlecode.iterm2 PrefsCustomFolder -string "$HOME/.config/iterm2"
+  defaults write com.googlecode.iterm2 LoadPrefsFromCustomFolder -bool true
+  echo "  [OK] iTerm2 preferences folder set to ~/.config/iterm2"
 fi
 
 # ----------------------------------------
