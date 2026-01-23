@@ -36,7 +36,7 @@ cask "google-chrome"
 cask "microsoft-edge"
 
 # Utilities
-brew "defaultbrowser"   # Set default browser from CLI
+brew "defaultbrowser"   # デフォルトブラウザをCLIで設定
 
 # Applications (optional - uncomment as needed)
 # cask "cursor"

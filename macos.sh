@@ -88,12 +88,12 @@ defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
 defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
 
 # ----------------------------------------
-# Browser
+# ブラウザ
 # ----------------------------------------
 echo "Configuring Browser..."
 
 # デフォルトブラウザをMicrosoft Edgeに設定
-# Note: defaultbrowser コマンドが必要 (brew install defaultbrowser)
+# defaultbrowser コマンドが必要 (brew install defaultbrowser)
 if command -v defaultbrowser &> /dev/null; then
   defaultbrowser edgemac
   echo "  Default browser set to Microsoft Edge"
@@ -101,7 +101,7 @@ else
   echo "  [SKIP] defaultbrowser command not found. Install with: brew install defaultbrowser"
 fi
 
-# Edgeを全てのSpacesに表示
+# Edgeを全Spacesに表示
 defaults write com.apple.spaces app-bindings -dict-add "com.microsoft.edgemac" "AllSpaces"
 
 # ----------------------------------------

@@ -6,6 +6,19 @@ DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
 echo "Setting up dotfiles..."
 
 # ----------------------------------------
+# Sudo認証（最初に1回だけ）
+# ----------------------------------------
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  echo "Requesting sudo access (for macOS settings)..."
+  sudo -v
+  # バックグラウンドでsudoを維持
+  (while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done) 2>/dev/null &
+  SUDO_PID=$!
+  # 終了時にバックグラウンドプロセスをkill（正常終了、エラー、Ctrl+C）
+  trap "kill $SUDO_PID 2>/dev/null" EXIT
+fi
+
+# ----------------------------------------
 # Install Homebrew (macOS)
 # ----------------------------------------
 if [[ "$OSTYPE" == "darwin"* ]]; then
