@@ -24,6 +24,9 @@ brew "lazygit"         # Git TUI
 brew "yazi"            # Terminal file manager
 brew "zoxide"          # Smarter cd command
 
+# Zsh Plugin Manager
+brew "sheldon"
+
 # Applications (optional - uncomment as needed)
 # cask "cursor"
 # cask "google-chrome"
