@@ -50,6 +50,20 @@ else
   alias diff='diff -u'
 fi
 
+# eza (ls replacement)
+if command -v eza &> /dev/null; then
+  alias ls='eza --icons'
+  alias ll='eza -l --git --icons'
+  alias la='eza -la --git --icons'
+  alias lt='eza --tree --level=2 --icons'
+fi
+
+# bat (cat replacement)
+if command -v bat &> /dev/null; then
+  alias cat='bat --paging=never'
+  alias catp='bat'  # with pager
+fi
+
 # yazi
 function y() {
   export YAZI_START_DIR="$PWD"
@@ -58,6 +72,9 @@ function y() {
 
 # zoxide
 eval "$(zoxide init zsh)"
+
+# direnv
+eval "$(direnv hook zsh)"
 
 # wtp
 eval "$(wtp shell-init zsh)"
