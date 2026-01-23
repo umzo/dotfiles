@@ -4,6 +4,9 @@
 # macOS
 .DS_Store
 
+# iTerm2 color schemes
+*.itermcolors
+
 # Neovim
 nvim/plugin/
 nvim/lazy-lock.json
