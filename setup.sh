@@ -121,6 +121,14 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 fi
 
 # ----------------------------------------
+# macOS settings
+# ----------------------------------------
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  echo "Applying macOS settings..."
+  "$DOTFILES_DIR/macos.sh"
+fi
+
+# ----------------------------------------
 # mise (runtime version manager)
 # ----------------------------------------
 if command -v mise &> /dev/null; then

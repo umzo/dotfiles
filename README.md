@@ -41,6 +41,7 @@ diskutil apfs addVolume disk3 "Case-sensitive APFS" Develop
 ```
 dotfiles/
 ├── setup.sh              # セットアップスクリプト
+├── macos.sh              # macOS設定スクリプト
 ├── Brewfile              # Homebrewパッケージ
 ├── zsh/
 │   ├── .zshrc
@@ -67,9 +68,12 @@ dotfiles/
 ├── sheldon/              # Zshプラグインマネージャー設定
 │   └── .config/sheldon/
 │       └── plugins.toml
-└── iterm2/               # iTerm2設定
-    └── .config/iterm2/
-        └── com.googlecode.iterm2.plist
+├── iterm2/               # iTerm2設定
+│   └── .config/iterm2/
+│       └── com.googlecode.iterm2.plist
+└── bat/                  # bat設定
+    └── .config/bat/
+        └── config
 ```
 
 ## Local Settings
@@ -83,12 +87,13 @@ dotfiles/
 
 | カテゴリ | パッケージ |
 |---------|-----------|
-| CLI Tools | git, neovim, ripgrep, fd, fzf, tree-sitter, colordiff, jq, starship |
+| CLI Tools | git, neovim, ripgrep, fd, fzf, tree-sitter, colordiff, jq, yq, eza, bat, direnv, starship |
 | Runtime Manager | mise |
 | Development | gh (GitHub CLI), lazygit |
 | File Manager | yazi, zoxide |
 | Plugin Manager | sheldon |
 | Terminal | iterm2 |
+| Fonts | font-hack-nerd-font |
 
 ---
 
@@ -104,6 +109,12 @@ dotfiles/
 | `c` | `cursor` | Cursorエディタを起動 |
 | `diff` | `colordiff -u` | カラー差分表示 |
 | `y` | `yazi` + 環境変数設定 | Yaziを起動（開始ディレクトリを記憶） |
+| `ls` | `eza --icons` | モダンなls（アイコン付き） |
+| `ll` | `eza -l --git --icons` | 詳細表示 + Git状態 |
+| `la` | `eza -la --git --icons` | 隠しファイル含む詳細表示 |
+| `lt` | `eza --tree --level=2 --icons` | ツリー表示（2階層） |
+| `cat` | `bat --paging=never` | シンタックスハイライト付きcat |
+| `catp` | `bat` | ページャー付きbat |
 
 #### Safety Functions
 
@@ -120,6 +131,16 @@ dotfiles/
 |-----------|------|
 | zsh-autosuggestions | コマンド自動補完候補の表示 |
 | fast-syntax-highlighting | シンタックスハイライト |
+
+#### direnv
+
+ディレクトリごとの環境変数管理。`.envrc` ファイルで環境変数を自動設定。
+
+```bash
+# プロジェクトで使用
+echo 'export API_KEY="xxx"' > .envrc
+direnv allow
+```
 
 ---
 
@@ -252,11 +273,50 @@ dotfiles/
 
 ---
 
+### bat
+
+catの代替。シンタックスハイライト付きでファイルを表示。
+
+#### Settings
+
+| 設定 | 値 |
+|------|-----|
+| テーマ | Catppuccin Mocha |
+| スタイル | 行番号、Git変更、ヘッダー表示 |
+
+テーマ一覧: `bat --list-themes`
+
+---
+
+### macOS Settings
+
+`macos.sh` でシステム設定を自動適用。
+
+```bash
+./macos.sh
+```
+
+#### 設定内容
+
+| カテゴリ | 設定 |
+|---------|------|
+| Finder | 隠しファイル表示、拡張子表示、パスバー、ステータスバー |
+| Dock | 自動非表示、アニメーション無効、Mission Control高速化、Spaces固定 |
+| Keyboard | リピート速度最速、リピート開始最短 |
+| Text Input | 自動大文字・スマートダッシュ・スマートクォート・自動修正を無効化 |
+| Screenshot | デスクトップ保存、PNG形式、影なし |
+| Accessibility | 視差効果を減らす |
+
+---
+
 ## Commands
 
 ```bash
-# セットアップ
+# セットアップ（全て実行）
 ./setup.sh
+
+# macOS設定のみ適用
+./macos.sh
 
 # Homebrewパッケージ更新
 brew bundle --file=~/dotfiles/Brewfile

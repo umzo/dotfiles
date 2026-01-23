@@ -12,6 +12,9 @@ eval "$(mise activate zsh)"
 # claude
 export PATH="$HOME/.local/bin:$PATH"
 
+# Default editor
+export EDITOR=nvim
+
 # pkg-config (for phpenv etc.)
 export PKG_CONFIG_PATH="/usr/local/opt/openssl@1.1/lib/pkgconfig:/usr/local/opt/libzip/lib/pkgconfig:/usr/local/opt/zlib/lib/pkgconfig:/usr/local/opt/bzip2/lib/pkgconfig:/usr/local/opt/oniguruma/lib/pkgconfig"
 export LDFLAGS="-L/usr/local/opt/zlib/lib -L/usr/local/opt/bzip2/lib"
@@ -78,6 +81,28 @@ eval "$(direnv hook zsh)"
 
 # wtp
 eval "$(wtp shell-init zsh)"
+
+# ============================================================
+#   iTerm2 Functions
+# ============================================================
+
+# tn: タブ名を設定（タブ内の全ペインに適用）
+tn() {
+  if [[ -z "$1" ]]; then
+    echo "Usage: tn <tab_name>"
+    return 1
+  fi
+  osascript -e "tell application \"iTerm2\" to tell current tab of current window
+    repeat with s in sessions
+      tell s to set name to \"$1\"
+    end repeat
+  end tell"
+}
+
+# tn-s: 現在のタブ名を取得
+tn-s() {
+  osascript -e 'tell application "iTerm2" to tell current session of current tab of current window to get name' | sed -n 's/ ([^)]*)$//p'
+}
 
 # ============================================================
 #   Safety Functions

@@ -31,9 +31,15 @@ brew "zoxide"          # Smarter cd command
 # Zsh Plugin Manager
 brew "sheldon"
 
+# Browsers
+cask "google-chrome"
+cask "microsoft-edge"
+
+# Utilities
+brew "defaultbrowser"   # Set default browser from CLI
+
 # Applications (optional - uncomment as needed)
 # cask "cursor"
-# cask "google-chrome"
 # cask "slack"
 # cask "docker"
 
