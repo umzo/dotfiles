@@ -14,6 +14,9 @@ brew "jq"
 brew "yq"              # YAML processor (jq for YAML)
 brew "eza"             # Modern ls replacement
 brew "bat"             # Cat with syntax highlighting
+brew "wget"
+brew "tmux"
+brew "btop"            # Process monitor
 brew "direnv"          # Directory-specific env vars
 brew "starship"
 
@@ -37,11 +40,13 @@ cask "microsoft-edge"
 
 # Utilities
 brew "defaultbrowser"   # デフォルトブラウザをCLIで設定
+cask "raycast"          # Spotlight代替ランチャー
 
-# Applications (optional - uncomment as needed)
+# Applications
+cask "docker"
+cask "zed"
 # cask "cursor"
 # cask "slack"
-# cask "docker"
 
 # Terminal
 cask "iterm2"

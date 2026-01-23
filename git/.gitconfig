@@ -14,12 +14,5 @@
 [push]
     default = current
 
-[alias]
-    st = status
-    co = checkout
-    br = branch
-    cm = commit
-    lg = log --oneline --graph --decorate
-
 [diff]
     colorMoved = default

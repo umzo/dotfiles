@@ -42,4 +42,14 @@ return {
       delay = 300, -- デフォルトは500ms
     },
   },
+
+  -- Markdownプレビュー
+  {
+    "previm/previm",
+    ft = { "markdown" },
+    dependencies = { "tyru/open-browser.vim" },
+    keys = {
+      { "<leader>mp", "<cmd>PrevimOpen<cr>", desc = "Preview Markdown" },
+    },
+  },
 }

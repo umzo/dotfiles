@@ -87,11 +87,14 @@ dotfiles/
 
 | カテゴリ | パッケージ |
 |---------|-----------|
-| CLI Tools | git, neovim, ripgrep, fd, fzf, tree-sitter, colordiff, jq, yq, eza, bat, direnv, starship |
+| CLI Tools | git, neovim, ripgrep, fd, fzf, tree-sitter, colordiff, jq, yq, eza, bat, wget, tmux, btop, direnv, starship |
 | Runtime Manager | mise |
 | Development | gh (GitHub CLI), lazygit |
 | File Manager | yazi, zoxide |
 | Plugin Manager | sheldon |
+| Browsers | google-chrome, microsoft-edge |
+| Utilities | defaultbrowser, raycast |
+| Applications | docker, zed, slack |
 | Terminal | iterm2 |
 | Fonts | font-hack-nerd-font |
 
@@ -170,16 +173,6 @@ direnv allow
 
 ### Git
 
-#### Aliases
-
-| Alias | コマンド |
-|-------|---------|
-| `st` | `status` |
-| `co` | `checkout` |
-| `br` | `branch` |
-| `cm` | `commit` |
-| `lg` | `log --oneline --graph --decorate` |
-
 #### Settings
 
 - デフォルトブランチ: `main`
@@ -212,6 +205,7 @@ direnv allow
 | `<leader>\|` | n | 垂直分割 |
 | `S-h` / `S-l` | n | 前/次のバッファ |
 | `<leader>tt` | n | ターミナルを開く |
+| `<leader>mp` | n | Markdownプレビュー (Previm) |
 | `Esc Esc` | t | ターミナルモードを抜ける |
 | `Esc` | n | 検索ハイライトをクリア |
 
