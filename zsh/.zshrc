@@ -168,11 +168,18 @@ _autosuggest_partial_word() {
   BUFFER="$BUFFER$suggestion"
   POSTDISPLAY=""
 
-  # 空白をスキップして次の単語の終わりまでカーソルを移動
+  # 空白をスキップ
   while [[ $CURSOR -lt ${#BUFFER} && "${BUFFER:$CURSOR:1}" == " " ]]; do
     ((CURSOR++))
   done
-  while [[ $CURSOR -lt ${#BUFFER} && "${BUFFER:$CURSOR:1}" != " " ]]; do
+
+  # /で始まる場合は/を含めて進む
+  if [[ "${BUFFER:$CURSOR:1}" == "/" ]]; then
+    ((CURSOR++))
+  fi
+
+  # 次の区切り（空白または/）まで進む
+  while [[ $CURSOR -lt ${#BUFFER} && "${BUFFER:$CURSOR:1}" != " " && "${BUFFER:$CURSOR:1}" != "/" ]]; do
     ((CURSOR++))
   done
 
