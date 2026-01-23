@@ -155,6 +155,39 @@ confirm_command() {
 
 eval "$(sheldon source)"
 
+# zsh-autosuggestions: Ctrl+F で単語単位の部分補完（空白区切り）
+# NOTE: vi-forward-blank-word等のzsh組み込みウィジェットはzsh-autosuggestionsに
+# フックされており、カスタムウィジェット内から呼び出すと複数回トリガーされて
+# 文字が重複する問題が発生する。そのため、BUFFER/POSTDISPLAY/CURSORを直接操作する。
+_autosuggest_partial_word() {
+  # サジェストがなければ何もしない
+  [[ -z "$POSTDISPLAY" ]] && return
+
+  # サジェストをバッファに追加
+  local suggestion="$POSTDISPLAY"
+  BUFFER="$BUFFER$suggestion"
+  POSTDISPLAY=""
+
+  # 空白をスキップして次の単語の終わりまでカーソルを移動
+  while [[ $CURSOR -lt ${#BUFFER} && "${BUFFER:$CURSOR:1}" == " " ]]; do
+    ((CURSOR++))
+  done
+  while [[ $CURSOR -lt ${#BUFFER} && "${BUFFER:$CURSOR:1}" != " " ]]; do
+    ((CURSOR++))
+  done
+
+  # カーソル以降を再びサジェストに戻す
+  if [[ $CURSOR -lt ${#BUFFER} ]]; then
+    POSTDISPLAY="${BUFFER:$CURSOR}"
+    BUFFER="${BUFFER:0:$CURSOR}"
+  fi
+
+  # シンタックスハイライトを再描画
+  zle redisplay
+}
+zle -N _autosuggest_partial_word
+bindkey '^F' _autosuggest_partial_word
+
 # ============================================================
 #   Completions
 # ============================================================

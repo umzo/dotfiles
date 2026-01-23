@@ -135,6 +135,13 @@ dotfiles/
 | zsh-autosuggestions | コマンド自動補完候補の表示 |
 | fast-syntax-highlighting | シンタックスハイライト |
 
+**zsh-autosuggestions キーバインド:**
+
+| キー | 動作 |
+|------|------|
+| `→` (右矢印) | サジェスト全体を補完 |
+| `Ctrl+F` | 単語単位で補完（空白区切り） |
+
 #### direnv
 
 ディレクトリごとの環境変数管理。`.envrc` ファイルで環境変数を自動設定。
