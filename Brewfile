@@ -20,6 +20,9 @@ brew "btop"            # Process monitor
 brew "direnv"          # Directory-specific env vars
 brew "starship"
 
+# AI agent
+cask "claude-code"
+
 # Runtime Version Manager
 brew "mise"
 
@@ -43,7 +46,7 @@ brew "defaultbrowser"   # デフォルトブラウザをCLIで設定
 cask "raycast"          # Spotlight代替ランチャー
 
 # Applications
-cask "docker"
+cask "docker-desktop"
 cask "zed"
 # cask "cursor"
 # cask "slack"
