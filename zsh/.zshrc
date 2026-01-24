@@ -215,6 +215,9 @@ bindkey '^E' _autosuggest_accept_or_end_of_line
 #   Completions
 # ============================================================
 
+# ドットファイル（.で始まるファイル）も補完候補に表示
+setopt GLOB_DOTS
+
 autoload -U +X bashcompinit && bashcompinit
 complete -o nospace -C /opt/homebrew/bin/terraform terraform
 

@@ -1,5 +1,6 @@
 # Local settings (contain secrets)
 *.local
+!**/.local/
 
 # macOS
 .DS_Store
