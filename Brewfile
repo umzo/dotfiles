@@ -37,6 +37,9 @@ brew "zoxide"          # Smarter cd command
 # Zsh Plugin Manager
 brew "sheldon"
 
+# Dashboard
+brew "wtfutil"
+
 # Browsers
 cask "google-chrome"
 cask "microsoft-edge"

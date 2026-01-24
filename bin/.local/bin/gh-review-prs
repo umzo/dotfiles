@@ -1,0 +1,87 @@
+#!/bin/bash
+# Display PRs awaiting my review, sorted by oldest first
+# Filter: asuene org only, created within last 3 months
+# Cache: 30 minutes
+
+CACHE_FILE="${XDG_CACHE_HOME:-$HOME/.cache}/gh-review-prs.txt"
+CACHE_MAX_AGE=1800  # 30 minutes in seconds
+
+# Check if cache is valid
+if [ -f "$CACHE_FILE" ]; then
+  cache_age=$(($(date +%s) - $(stat -f %m "$CACHE_FILE")))
+  if [ $cache_age -lt $CACHE_MAX_AGE ]; then
+    cat "$CACHE_FILE"
+    exit 0
+  fi
+fi
+
+# Calculate date 3 months ago
+three_months_ago=$(date -v-3m +%Y-%m-%d)
+
+# Search PRs
+prs=$(gh search prs --review-requested=@me --state=open --owner=asuene \
+  --created=">=$three_months_ago" --sort=created --order=asc \
+  --json repository,number,title,createdAt 2>&1)
+
+if [ $? -ne 0 ]; then
+  echo "Error: $prs"
+  exit 1
+fi
+
+# Check if no results
+if [ "$prs" = "[]" ] || [ -z "$prs" ]; then
+  echo "No review requests" | tee "$CACHE_FILE"
+  exit 0
+fi
+
+# Create temp file for output
+mkdir -p "$(dirname "$CACHE_FILE")"
+tmpfile=$(mktemp)
+
+# Header
+printf "%-14s %-8s %-12s %-10s %s\n" "REPO" "PR#" "+/-" "CREATED" "TITLE" >> "$tmpfile"
+printf "%-14s %-8s %-12s %-10s %s\n" "----" "---" "---" "-------" "-----" >> "$tmpfile"
+
+while read -r line; do
+  repo=$(echo "$line" | jq -r '.repository.nameWithOwner')
+  repo_name=$(echo "$line" | jq -r '.repository.name')
+  number=$(echo "$line" | jq -r '.number')
+  title=$(echo "$line" | jq -r '.title' | cut -c1-40)
+
+  # Get additions/deletions and URL
+  pr_detail=$(gh pr view "$number" -R "$repo" --json additions,deletions,url 2>/dev/null)
+  additions=$(echo "$pr_detail" | jq -r '.additions // 0')
+  deletions=$(echo "$pr_detail" | jq -r '.deletions // 0')
+  url=$(echo "$pr_detail" | jq -r '.url // ""')
+
+  # Format created time
+  created_ago=$(gh api --method GET -H "Accept: application/vnd.github+json" \
+    "/repos/$repo/pulls/$number" --jq '.created_at' 2>/dev/null)
+
+  if [ -n "$created_ago" ]; then
+    created_ts=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "$created_ago" +%s 2>/dev/null)
+    now=$(date +%s)
+    diff=$((now - created_ts))
+    if [ $diff -lt 86400 ]; then
+      time_ago="$((diff / 3600))h ago"
+    elif [ $diff -lt 2592000 ]; then
+      time_ago="$((diff / 86400))d ago"
+    else
+      time_ago="$((diff / 2592000))mo ago"
+    fi
+  else
+    time_ago="?"
+  fi
+
+  # OSC 8 hyperlink: \e]8;;URL\e\\TEXT\e]8;;\e\\
+  link_start=$(printf '\033]8;;%s\033\\' "$url")
+  link_end=$(printf '\033]8;;\033\\')
+
+  printf "%-14s ${link_start}#%-6s${link_end} +%-5d/-%-4d %-10s %s\n" \
+    "$repo_name" "$number" "$additions" "$deletions" "$time_ago" "$title" >> "$tmpfile"
+
+done < <(echo "$prs" | jq -c '.[]')
+
+# Save to cache and output
+mv "$tmpfile" "$CACHE_FILE"
+cat "$CACHE_FILE"

@@ -4,3 +4,6 @@
 
 # GitHub
 export GITHUB_TOKEN="your_github_token_here"
+
+# wtfutil用（WTF_GITHUB_TOKENを優先使用）
+export WTF_GITHUB_TOKEN="$GITHUB_TOKEN"
