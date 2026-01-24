@@ -14,20 +14,23 @@ if tmux has-session -t $SESSION 2>/dev/null; then
   exit 0
 fi
 
-# セッション作成（ペインA）
+# セッション作成（上段：ペイン0）
 tmux new-session -d -s $SESSION -c "$DIR"
 
-# 右に分割（ペインB）
-tmux split-window -h -t $SESSION -c "$DIR"
-
-# ペインAを選択して下に分割（ペインC）
-tmux select-pane -t $SESSION:0.0
+# 下に分割（下段：ペイン1）- claudeが入る全幅のペイン
 tmux split-window -v -t $SESSION -c "$DIR"
 
-# レイアウト調整（下を大きく）
-tmux resize-pane -t $SESSION:0.2 -y 60%
+# 上段（ペイン0）を選択して右に分割（右上：ペイン2）
+tmux select-pane -t $SESSION:0.0
+tmux split-window -h -t $SESSION -c "$DIR"
+
+# レイアウト調整（下を大きく：60%）
+tmux resize-pane -t $SESSION:0.1 -y 60%
 
 # 各ペインでコマンド実行
+# ペイン0: 左上 → lazygit
+# ペイン1: 右上 → y
+# ペイン2: 下（全幅） → claude
 tmux send-keys -t $SESSION:0.0 'lazygit' C-m
 tmux send-keys -t $SESSION:0.1 'y' C-m
 tmux send-keys -t $SESSION:0.2 'claude' C-m
