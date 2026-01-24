@@ -32,6 +32,7 @@ wtf:
       type: cmdrunner
       title: "Review Requests (oldest first)"
       enabled: true
+      focusable: false
       position:
         top: 0
         left: 1
