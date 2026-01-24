@@ -130,6 +130,8 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   echo "Configuring iTerm2..."
   defaults write com.googlecode.iterm2 PrefsCustomFolder -string "$HOME/.config/iterm2"
   defaults write com.googlecode.iterm2 LoadPrefsFromCustomFolder -bool true
+  # Save changes: 0=When Quitting, 1=Manually, 2=Automatically
+  defaults write com.googlecode.iterm2 NoSyncNeverRemindPrefsChangesLostForFile_selection -int 2
   echo "  [OK] iTerm2 preferences folder set to ~/.config/iterm2"
 fi
 

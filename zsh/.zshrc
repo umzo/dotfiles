@@ -101,7 +101,7 @@ tn() {
 
 # tn-s: 現在のタブ名を取得
 tn-s() {
-  osascript -e 'tell application "iTerm2" to tell current session of current tab of current window to get name' | sed -n 's/ ([^)]*)$//p'
+  osascript -e 'tell application "iTerm2" to tell current session of current tab of current window to get name' | sed 's/ ([^)]*)$//'
 }
 
 # ============================================================
