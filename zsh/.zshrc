@@ -160,8 +160,11 @@ eval "$(sheldon source)"
 # フックされており、カスタムウィジェット内から呼び出すと複数回トリガーされて
 # 文字が重複する問題が発生する。そのため、BUFFER/POSTDISPLAY/CURSORを直接操作する。
 _autosuggest_partial_word() {
-  # サジェストがなければ何もしない
-  [[ -z "$POSTDISPLAY" ]] && return
+  # サジェストがなければ通常の1文字移動
+  if [[ -z "$POSTDISPLAY" ]]; then
+    zle forward-char
+    return
+  fi
 
   # サジェストをバッファに追加
   local suggestion="$POSTDISPLAY"
@@ -194,6 +197,19 @@ _autosuggest_partial_word() {
 }
 zle -N _autosuggest_partial_word
 bindkey '^F' _autosuggest_partial_word
+
+# zsh-autosuggestions: Ctrl+E でサジェスト全体を受け入れ（サジェストがない時は行末移動）
+_autosuggest_accept_or_end_of_line() {
+  if [[ -n "$POSTDISPLAY" ]]; then
+    # サジェストがあれば全体を受け入れ
+    zle autosuggest-accept
+  else
+    # なければ通常の行末移動
+    zle end-of-line
+  fi
+}
+zle -N _autosuggest_accept_or_end_of_line
+bindkey '^E' _autosuggest_accept_or_end_of_line
 
 # ============================================================
 #   Completions
