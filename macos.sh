@@ -52,6 +52,9 @@ defaults write com.apple.dock workspaces-swoosh-animation-off -bool true
 # Spacesの自動並び替えを無効化（配置を固定）
 defaults write com.apple.dock mru-spaces -bool false
 
+# デスクトップクリックでウィンドウを退避する機能を無効化
+defaults write com.apple.WindowManager EnableStandardClickToShowDesktop -bool false
+
 # 視差効果を減らす（システム全体のアニメーション軽減）
 # Note: requires sudo
 sudo defaults write com.apple.universalaccess reduceMotion -bool true
@@ -86,6 +89,26 @@ defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
 
 # 自動スペル修正を無効化
 defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
+
+# ----------------------------------------
+# Japanese Input (Kotoeri)
+# ----------------------------------------
+echo "Configuring Japanese Input..."
+
+# ライブ変換を無効化
+defaults write com.apple.inputmethod.Kotoeri JIMPrefLiveConversionKey -bool false
+
+# タイプミスを修正を無効化
+defaults write com.apple.inputmethod.Kotoeri JIMPrefAutocorrectionKey -int 0
+
+# Windows風のキー操作を有効化
+defaults write com.apple.inputmethod.Kotoeri JIMPrefWindowsModeKey -bool true
+
+# 推測候補表示を無効化
+defaults write com.apple.inputmethod.Kotoeri JIMPrefPredictiveCandidateKey -bool false
+
+# 数字を全角入力を無効化
+defaults write com.apple.inputmethod.Kotoeri JIMPrefFullWidthNumeralCharactersKey -bool false
 
 # ----------------------------------------
 # ブラウザ
