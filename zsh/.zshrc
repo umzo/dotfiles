@@ -46,6 +46,10 @@ alias vi='nvim'
 alias c='cursor'
 alias godot='/Applications/Godot.app/Contents/MacOS/Godot'
 
+# npm global packages (always use global version)
+alias czg='mise exec -- czg'
+alias difit='mise exec -- difit'
+
 # colordiff
 if [[ -x $(which colordiff) ]]; then
   alias diff='colordiff -u'

@@ -152,7 +152,7 @@ if command -v mise &> /dev/null; then
   mise use -g node@24
 
   echo "Installing global npm packages..."
-  mise exec -- npm install -g czg cz-git
+  mise exec -- npm install -g czg cz-git difit
 
   # Load local env for GITHUB_TOKEN
   [[ -f "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
