@@ -29,6 +29,7 @@ brew "mise"
 # Development
 brew "gh"              # GitHub CLI
 brew "lazygit"         # Git TUI
+brew "awscli"          # AWS CLI
 
 # File Manager & Navigation
 brew "yazi"            # Terminal file manager
