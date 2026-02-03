@@ -12,6 +12,9 @@ eval "$(mise activate zsh)"
 # claude
 export PATH="$HOME/.local/bin:$PATH"
 
+# XDG Base Directory
+export XDG_CONFIG_HOME="$HOME/.config"
+
 # Default editor
 export EDITOR=nvim
 
