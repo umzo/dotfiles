@@ -43,13 +43,18 @@ return {
     },
   },
 
-  -- Markdownプレビュー
+  -- Markdownプレビュー（markdown-preview.nvim）
+  -- mermaid, KaTeX, 画像対応
   {
-    "previm/previm",
+    "iamcco/markdown-preview.nvim",
+    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
     ft = { "markdown" },
-    dependencies = { "tyru/open-browser.vim" },
+    build = "cd app && npm install",
+    init = function()
+      vim.g.mkdp_auto_close = 0
+    end,
     keys = {
-      { "<leader>mp", "<cmd>PrevimOpen<cr>", desc = "Preview Markdown" },
+      { "<leader>mp", "<cmd>MarkdownPreview<cr>", desc = "Preview Markdown" },
     },
   },
 }

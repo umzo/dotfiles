@@ -29,6 +29,7 @@ brew "mise"
 # Development
 brew "gh"              # GitHub CLI
 brew "lazygit"         # Git TUI
+brew "mdserve"         # Markdown preview server
 brew "awscli"          # AWS CLI
 
 # File Manager & Navigation

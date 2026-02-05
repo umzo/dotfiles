@@ -15,6 +15,9 @@ export PATH="$HOME/.local/bin:$PATH"
 # XDG Base Directory
 export XDG_CONFIG_HOME="$HOME/.config"
 
+# lazygit
+export LG_CONFIG_FILE="$HOME/.config/lazygit/config.yml"
+
 # Default editor
 export EDITOR=nvim
 

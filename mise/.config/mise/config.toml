@@ -3,3 +3,5 @@ trusted_config_paths = ["/Volumes/Develop", "~/dotfiles"]
 
 [tools]
 node = "24"
+python = "3.12"
+uv = "latest"

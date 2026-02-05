@@ -13,3 +13,8 @@ desc = "Copy relative path from start dir"
 on = ["g", "s"]
 run = 'cd "$YAZI_START_DIR"'
 desc = "Go to starting directory"
+
+[[mgr.prepend_keymap]]
+on = ["b"]
+run = 'shell -- mdpreview "$@"'
+desc = "Preview markdown in browser"
