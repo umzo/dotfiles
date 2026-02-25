@@ -1,0 +1,23 @@
+# ============================================================
+#   Brewfile.dev - 開発環境用パッケージ (iterm2 + tmux + lazygit + yazi)
+# ============================================================
+
+# Terminal
+cask "iterm2"
+brew "tmux"
+brew "lazygit"
+brew "yazi"
+
+# Supporting CLI tools
+brew "mise"
+brew "bat"
+brew "fzf"
+brew "ripgrep"
+brew "fd"
+brew "eza"
+brew "starship"
+brew "tree-sitter"    # yaziのプレビューに必要
+brew "mdserve"        # mdpreviewスクリプトに必要
+
+# Fonts
+cask "font-hack-nerd-font"

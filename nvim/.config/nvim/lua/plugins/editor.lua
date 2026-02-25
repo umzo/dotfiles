@@ -54,6 +54,17 @@ return {
     },
   },
 
+  -- im-select.nvim（insertモード離脱時にIMEを英数に切替、macismをバックエンドに使用）
+  {
+    "keaising/im-select.nvim",
+    config = function()
+      require("im_select").setup({
+        default_im_select = "com.apple.keylayout.ABC",
+        set_previous_events = { "InsertEnter" },
+      })
+    end,
+  },
+
   -- Markdownプレビュー（markdown-preview.nvim）
   -- mermaid, KaTeX, 画像対応
   {

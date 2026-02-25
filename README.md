@@ -87,7 +87,7 @@ dotfiles/
 
 | カテゴリ | パッケージ |
 |---------|-----------|
-| CLI Tools | git, neovim, ripgrep, fd, fzf, tree-sitter, colordiff, jq, yq, eza, bat, wget, tmux, btop, direnv, starship |
+| CLI Tools | git, neovim, ripgrep, fd, fzf, tree-sitter, colordiff, jq, yq, eza, bat, wget, tmux, btop, direnv, starship, macism |
 | Runtime Manager | mise |
 | Development | gh (GitHub CLI), lazygit |
 | File Manager | yazi, zoxide |
@@ -256,6 +256,8 @@ dev-tmux <session-name> [directory]
 - neo-tree: 隠しファイル表示、node_modules/.git非表示
 - telescope: node_modules, .git/, dist/, build/を除外
 - which-key: 遅延300ms
+- flash.nvim: `s` + 2文字で画面内の任意の位置にジャンプ、`S` でTreesitterノード単位の選択
+- im-select.nvim + macism: Insertモードを抜けると自動で英数(ABC)に切り替え
 
 ---
 

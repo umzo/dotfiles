@@ -89,6 +89,17 @@ eval "$(direnv hook zsh)"
 eval "$(wtp shell-init zsh)"
 
 # ============================================================
+#   iTerm2 Shell Integration
+# ============================================================
+
+# 作業ディレクトリをiTerm2に通知（tmux内でもCommand+Clickでファイルを開けるようにする）
+precmd_iterm2_cwd() {
+  printf '\e]7;file://%s%s\e\\' "$HOST" "$PWD"
+}
+autoload -Uz add-zsh-hook
+add-zsh-hook precmd precmd_iterm2_cwd
+
+# ============================================================
 #   iTerm2 Functions
 # ============================================================
 
@@ -117,7 +128,7 @@ tn-s() {
 # terraform: 危険なコマンドを無効化
 terraform() {
   case $1 in
-    apply|destroy|import|state)
+    _apply|destroy|import|state)
       echo "⚠️  terraform $1 is disabled for safety. Please use Terraform Cloud."
       ;;
     taint|untaint)

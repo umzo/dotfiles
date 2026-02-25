@@ -10,8 +10,13 @@ GNU Stowを使ってシンボリックリンク方式で設定ファイルを管
 
 ```
 dotfiles/
-├── setup.sh                    # セットアップスクリプト
-├── Brewfile                    # Homebrewパッケージ一覧
+├── setup.sh                    # フルセットアップスクリプト
+├── setup-dev.sh                # 開発環境セットアップ (iterm2+tmux+lazygit+yazi)
+├── lib/
+│   ├── common.sh               # 共通関数ライブラリ
+│   └── macos.sh                # macOS設定スクリプト
+├── Brewfile                    # Homebrewパッケージ一覧（フル）
+├── Brewfile.dev                # Homebrewパッケージ一覧（開発環境用）
 ├── .gitignore
 ├── README.md
 ├── CLAUDE.md
@@ -164,11 +169,15 @@ LazyVimをベースに、以下をカスタマイズ：
 ## コマンド
 
 ```bash
-# セットアップ
+# フルセットアップ
 ./setup.sh
 
+# 開発環境のみセットアップ (iterm2+tmux+lazygit+yazi)
+./setup-dev.sh
+
 # Homebrewパッケージ更新
-brew bundle --file=~/dotfiles/Brewfile
+brew bundle --file=~/dotfiles/Brewfile      # フル
+brew bundle --file=~/dotfiles/Brewfile.dev  # 開発環境のみ
 
 # Neovim LSP管理
 nvim → :Mason

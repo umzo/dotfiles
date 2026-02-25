@@ -1,99 +1,36 @@
 #!/bin/bash
 set -e
 
-DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
+source "$(cd "$(dirname "$0")" && pwd)/lib/common.sh"
 
 echo "Setting up dotfiles..."
 
 # ----------------------------------------
 # Sudo認証（最初に1回だけ）
 # ----------------------------------------
-if [[ "$OSTYPE" == "darwin"* ]]; then
-  echo "Requesting sudo access (for macOS settings)..."
-  sudo -v
-  # バックグラウンドでsudoを維持
-  (while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done) 2>/dev/null &
-  SUDO_PID=$!
-  # 終了時にバックグラウンドプロセスをkill（正常終了、エラー、Ctrl+C）
-  trap "kill $SUDO_PID 2>/dev/null" EXIT
-fi
+setup_sudo
 
 # ----------------------------------------
 # Install Homebrew (macOS)
 # ----------------------------------------
-if [[ "$OSTYPE" == "darwin"* ]]; then
-  echo "Checking Homebrew..."
-  if ! command -v brew &> /dev/null; then
-    echo "  Installing Homebrew..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-    # Add Homebrew to PATH for this session
-    if [[ -f "/opt/homebrew/bin/brew" ]]; then
-      eval "$(/opt/homebrew/bin/brew shellenv)"
-    elif [[ -f "/usr/local/bin/brew" ]]; then
-      eval "$(/usr/local/bin/brew shellenv)"
-    fi
-  else
-    echo "  Homebrew already installed"
-  fi
-fi
+ensure_homebrew
 
 # ----------------------------------------
 # Install stow
 # ----------------------------------------
-echo "Checking stow..."
-
-if ! command -v stow &> /dev/null; then
-  if [[ "$OSTYPE" == "darwin"* ]]; then
-    echo "  Installing stow via Homebrew..."
-    brew install stow
-  elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
-    echo "  Installing stow via apt..."
-    sudo apt update && sudo apt install -y stow
-  fi
-else
-  echo "  stow already installed"
-fi
+ensure_stow
 
 # ----------------------------------------
 # Install tmux
 # ----------------------------------------
-echo "Checking tmux..."
-
-if ! command -v tmux &> /dev/null; then
-  if [[ "$OSTYPE" == "darwin"* ]]; then
-    echo "  Installing tmux via Homebrew..."
-    brew install tmux
-  elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
-    echo "  Installing tmux via apt..."
-    sudo apt install -y tmux
-  fi
-else
-  echo "  tmux already installed"
-fi
+ensure_tmux
 
 # ----------------------------------------
 # Stow packages
 # ----------------------------------------
 PACKAGES=(zsh git nvim yazi mise tmux starship iterm2 sheldon bat bin wtf lazygit)
 
-stow_package() {
-  local pkg=$1
-
-  # Check for conflicts using stow --simulate
-  if ! stow -d "$DOTFILES_DIR" -t "$HOME" --simulate "$pkg" 2>/dev/null; then
-    echo "  [SKIP] $pkg: existing files found, skipping"
-    return
-  fi
-
-  stow -d "$DOTFILES_DIR" -t "$HOME" "$pkg"
-  echo "  [OK] $pkg"
-}
-
-echo "Linking dotfiles with stow..."
-for pkg in "${PACKAGES[@]}"; do
-  stow_package "$pkg"
-done
+stow_packages "${PACKAGES[@]}"
 
 # ----------------------------------------
 # Local config files (not managed by stow)
@@ -126,21 +63,14 @@ fi
 # ----------------------------------------
 # iTerm2 (macOS)
 # ----------------------------------------
-if [[ "$OSTYPE" == "darwin"* ]]; then
-  echo "Configuring iTerm2..."
-  defaults write com.googlecode.iterm2 PrefsCustomFolder -string "$HOME/.config/iterm2"
-  defaults write com.googlecode.iterm2 LoadPrefsFromCustomFolder -bool true
-  # Save changes: 0=When Quitting, 1=Manually, 2=Automatically
-  defaults write com.googlecode.iterm2 NoSyncNeverRemindPrefsChangesLostForFile_selection -int 2
-  echo "  [OK] iTerm2 preferences folder set to ~/.config/iterm2"
-fi
+setup_iterm2
 
 # ----------------------------------------
 # macOS settings
 # ----------------------------------------
 if [[ "$OSTYPE" == "darwin"* ]]; then
   echo "Applying macOS settings..."
-  "$DOTFILES_DIR/macos.sh"
+  "$DOTFILES_DIR/lib/macos.sh"
 fi
 
 # ----------------------------------------
