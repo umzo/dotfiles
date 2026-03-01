@@ -2,6 +2,10 @@
 #   Brewfile - Homebrew packages
 # ============================================================
 
+# Taps (must be first)
+tap "laishulu/homebrew"
+tap "hashicorp/tap"
+
 # CLI Tools
 brew "git"
 brew "neovim"
@@ -19,8 +23,6 @@ brew "tmux"
 brew "btop"            # Process monitor
 brew "direnv"          # Directory-specific env vars
 brew "starship"
-# Input method switcher (tap: laishulu/homebrew)
-tap "laishulu/homebrew"
 brew "macism"          # Input method switcher for Neovim
 
 # AI agent
@@ -35,7 +37,6 @@ brew "lazygit"         # Git TUI
 brew "mdserve"         # Markdown preview server
 brew "awscli"          # AWS CLI
 # Infrastructure as Code
-tap "hashicorp/tap"
 brew "hashicorp/tap/terraform"
 
 # File Manager & Navigation
