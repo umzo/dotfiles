@@ -1,6 +1,14 @@
 gui:
   expandFocusedSidePanel: true
   expandedSidePanelWeight: 4
+git:
+  autoFetch: false
+  fetchAll: false
+  log:
+    order: "default"
+refresher:
+  refreshInterval: 30
+  fetchInterval: 300
 customCommands:
   - key: "b"
     context: "files"

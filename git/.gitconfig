@@ -4,6 +4,8 @@
 [core]
     editor = nvim
     autocrlf = input
+    fsmonitor = true
+    untrackedcache = true
 
 [init]
     defaultBranch = main
@@ -14,5 +16,10 @@
 [push]
     default = current
 
+[fetch]
+    writeCommitGraph = true
+
 [diff]
     colorMoved = default
+[maintenance]
+	repo = /Volumes/Develop/asuene-career

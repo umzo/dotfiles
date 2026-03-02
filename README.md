@@ -57,6 +57,9 @@ dotfiles/
 │           └── plugins/
 ├── tmux/
 │   └── .tmux.conf
+├── lazygit/              # lazygit設定
+│   └── .config/lazygit/
+│       └── config.yml
 ├── yazi/                 # Yaziファイルマネージャー設定
 │   └── .config/yazi/
 │       └── keymap.toml
@@ -203,6 +206,51 @@ dev-tmux <session-name> [directory]
 - デフォルトブランチ: `main`
 - エディタ: `nvim`
 - push.default: `current`
+
+#### パフォーマンス設定
+
+大規模リポジトリ向けにGitのパフォーマンス設定を有効化済み：
+
+| 設定 | 効果 |
+|------|------|
+| `core.fsmonitor = true` | FSEventsによるファイル変更の高速検出（macOS + Git 2.37+） |
+| `core.untrackedcache = true` | untrackedファイルのキャッシュで `git status` 高速化 |
+| `fetch.writeCommitGraph = true` | fetch時にcommit-graphを自動更新 |
+
+**大規模リポジトリでの一回限りの最適化（手動実行）:**
+
+```bash
+# loose objectsの統合（ディスク・検索効率の改善）
+git gc --aggressive
+
+# commit-graphの構築（git log / merge-base の高速化）
+git commit-graph write --reachable --changed-paths
+
+# 継続的な自動最適化のスケジュール登録
+git maintenance start
+```
+
+---
+
+### lazygit
+
+#### パフォーマンス設定
+
+大規模リポジトリ（多数のworktree、220K+ objects等）でのCPU負荷を軽減する設定：
+
+| 設定 | 値 | 効果 |
+|------|-----|------|
+| `git.autoFetch` | `false` | バックグラウンドfetchを無効化（手動で `f` キー） |
+| `git.fetchAll` | `false` | fetch時に `--all` を使わない |
+| `git.log.order` | `"default"` | topo-order → defaultでコミットログ表示を高速化 |
+| `refresher.refreshInterval` | `30` | ファイル変更検出間隔を10秒→30秒に |
+| `refresher.fetchInterval` | `300` | fetch間隔を60秒→300秒に |
+
+#### Custom Commands
+
+| キー | コンテキスト | 動作 |
+|------|------------|------|
+| `b` | files | Markdownプレビュー（mdpreview） |
 
 ---
 

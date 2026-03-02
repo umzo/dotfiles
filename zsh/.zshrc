@@ -2,9 +2,14 @@
 #   Environment Variables / PATH
 # ============================================================
 
-# Homebrew grep
-eval "$(/opt/homebrew/bin/brew shellenv)"
-export PATH="$(brew --prefix grep)/libexec/gnubin:$PATH"
+# Homebrew (Apple Silicon: パス固定のためサブプロセスを避けて静的エクスポート)
+export HOMEBREW_PREFIX="/opt/homebrew"
+export HOMEBREW_CELLAR="/opt/homebrew/Cellar"
+export HOMEBREW_REPOSITORY="/opt/homebrew"
+export PATH="/opt/homebrew/bin:/opt/homebrew/sbin${PATH+:$PATH}"
+export MANPATH="/opt/homebrew/share/man${MANPATH+:$MANPATH}:"
+export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}"
+export PATH="/opt/homebrew/opt/grep/libexec/gnubin:$PATH"
 
 # mise
 eval "$(mise activate zsh)"
@@ -26,6 +31,9 @@ export PKG_CONFIG_PATH="/usr/local/opt/openssl@1.1/lib/pkgconfig:/usr/local/opt/
 export LDFLAGS="-L/usr/local/opt/zlib/lib -L/usr/local/opt/bzip2/lib"
 export CPPFLAGS="-I/usr/local/opt/zlib/include -I/usr/local/opt/bzip2/include"
 
+# git: リモートブランチ推測を無効化（checkout/switch補完の高速化）
+export GIT_COMPLETION_CHECKOUT_NO_GUESS=1
+
 # ============================================================
 #   History Settings
 # ============================================================
@@ -40,9 +48,64 @@ setopt share_history
 alias history='fc -lt "%F %T" 1'
 
 # ============================================================
-#   Completions (early init for tools that need compdef)
+#   Sheldon Plugin Manager
 # ============================================================
-autoload -Uz compinit && compinit
+
+# zsh-autosuggestions: プラグイン読み込み前に設定（デフォルト値の上書き）
+ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20        # 20文字超の入力で履歴検索を停止
+ZSH_AUTOSUGGEST_MANUAL_REBIND=1           # precmd毎のウィジェット再バインドを抑制
+ZSH_AUTOSUGGEST_STRATEGY=(history)        # completion strategyを使わず履歴のみ
+
+# fast-syntax-highlighting: 512文字超のバッファでハイライトをスキップ
+ZSH_HIGHLIGHT_MAXLENGTH=512
+
+# sheldon: プラグインソースをキャッシュ（plugins.toml変更時のみ再生成）
+_sheldon_cache="${XDG_CACHE_HOME:-$HOME/.cache}/sheldon/source.zsh"
+_sheldon_toml="${XDG_CONFIG_HOME:-$HOME/.config}/sheldon/plugins.toml"
+if [[ ! -f "$_sheldon_cache" || "$_sheldon_toml" -nt "$_sheldon_cache" ]]; then
+  mkdir -p "${_sheldon_cache:h}"
+  sheldon source > "$_sheldon_cache"
+fi
+source "$_sheldon_cache"
+unset _sheldon_cache _sheldon_toml
+
+# fast-syntax-highlighting: 全chromaを無効化
+# chromaは各コマンド固有の高度なハイライトを提供するが、
+# サブプロセス経由でコマンドを実行するため毎キーストロークのレイテンシに影響する。
+# unsetにより [[ -n ... ]] チェックがfalseになりchromaブロックを完全スキップ。
+# (=0 では非空文字列としてtrueになり、ブロックに入って失敗コマンドを実行していた)
+# 基本的なシンタックスハイライト（コマンド/引数/パスの色分け）は維持される。
+unset 'FAST_HIGHLIGHT[chroma-git]'    # git (git remote, git rev-parse等を実行)
+unset 'FAST_HIGHLIGHT[chroma-hub]'    # hub (git操作)
+unset 'FAST_HIGHLIGHT[chroma-lab]'    # lab (git操作)
+unset 'FAST_HIGHLIGHT[chroma-docker]' # docker (サブコマンド検証)
+unset 'FAST_HIGHLIGHT[chroma-make]'   # make (ターゲット検証)
+
+# fast-syntax-highlighting: ブラケット対応チェックを無効化（毎キーストロークの文字列解析を削減）
+FAST_HIGHLIGHT[use_brackets]=0
+
+# ============================================================
+#   Completions
+# ============================================================
+
+# sheldon読み込み後にcompinitを実行（プラグインのfpath拡張を反映）
+# .zcompdumpは1日1回だけ再生成し、それ以外はキャッシュを利用
+autoload -Uz compinit
+if [[ -n ${ZDOTDIR:-$HOME}/.zcompdump(#qN.mh+24) ]]; then
+  compinit
+else
+  compinit -C
+fi
+
+autoload -U +X bashcompinit && bashcompinit
+complete -o nospace -C /opt/homebrew/bin/terraform terraform
+
+# 補完結果のキャッシュ（git branch等の重い補完を高速化）
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path "${XDG_CACHE_HOME:-$HOME/.cache}/zsh/compcache"
+
+# ドットファイル（.で始まるファイル）も補完候補に表示
+setopt GLOB_DOTS
 
 # ============================================================
 #   Aliases
@@ -53,7 +116,7 @@ alias c='cursor'
 alias godot='/Applications/Godot.app/Contents/MacOS/Godot'
 
 # colordiff
-if [[ -x $(which colordiff) ]]; then
+if command -v colordiff &> /dev/null; then
   alias diff='colordiff -u'
 else
   alias diff='diff -u'
@@ -128,7 +191,7 @@ tn-s() {
 # terraform: 危険なコマンドを無効化
 terraform() {
   case $1 in
-    _apply|destroy|import|state)
+    apply|destroy|import|state)
       echo "⚠️  terraform $1 is disabled for safety. Please use Terraform Cloud."
       ;;
     taint|untaint)
@@ -166,12 +229,6 @@ confirm_command() {
 }
 # alias rm="confirm_command rm"
 
-# ============================================================
-#   Sheldon Plugin Manager
-# ============================================================
-
-eval "$(sheldon source)"
-
 # zsh-autosuggestions: Ctrl+F で単語単位の部分補完（空白区切り）
 # NOTE: vi-forward-blank-word等のzsh組み込みウィジェットはzsh-autosuggestionsに
 # フックされており、カスタムウィジェット内から呼び出すと複数回トリガーされて
@@ -179,7 +236,7 @@ eval "$(sheldon source)"
 _autosuggest_partial_word() {
   # サジェストがなければ通常の1文字移動
   if [[ -z "$POSTDISPLAY" ]]; then
-    zle forward-char
+    zle .forward-char
     return
   fi
 
@@ -209,8 +266,6 @@ _autosuggest_partial_word() {
     BUFFER="${BUFFER:0:$CURSOR}"
   fi
 
-  # シンタックスハイライトを再描画
-  zle redisplay
 }
 zle -N _autosuggest_partial_word
 bindkey '^F' _autosuggest_partial_word
@@ -227,16 +282,6 @@ _autosuggest_accept_or_end_of_line() {
 }
 zle -N _autosuggest_accept_or_end_of_line
 bindkey '^E' _autosuggest_accept_or_end_of_line
-
-# ============================================================
-#   Completions
-# ============================================================
-
-# ドットファイル（.で始まるファイル）も補完候補に表示
-setopt GLOB_DOTS
-
-autoload -U +X bashcompinit && bashcompinit
-complete -o nospace -C /opt/homebrew/bin/terraform terraform
 
 # ============================================================
 #   Starship Prompt
