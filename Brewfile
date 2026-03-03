@@ -23,7 +23,7 @@ brew "tmux"
 brew "btop"            # Process monitor
 brew "direnv"          # Directory-specific env vars
 brew "starship"
-brew "macism"          # Input method switcher for Neovim
+brew "laishulu/homebrew/macism"  # Input method switcher for Neovim
 
 # AI agent
 cask "claude-code"

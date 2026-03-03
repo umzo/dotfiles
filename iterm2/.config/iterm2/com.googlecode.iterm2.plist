@@ -489,6 +489,8 @@
 	<integer>262401</integer>
 	<key>IRMemory</key>
 	<integer>4</integer>
+	<key>LeftTabBarWidth</key>
+	<real>182</real>
 	<key>New Bookmarks</key>
 	<array>
 		<dict>
@@ -2833,6 +2835,8 @@
 	<integer>0</integer>
 	<key>TabStyleWithAutomaticOption</key>
 	<integer>6</integer>
+	<key>TabViewType</key>
+	<integer>2</integer>
 	<key>UseLionStyleFullscreen</key>
 	<false/>
 	<key>VisualIndicatorForEsc</key>
