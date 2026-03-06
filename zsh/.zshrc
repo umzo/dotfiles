@@ -136,6 +136,45 @@ if command -v bat &> /dev/null; then
   alias catp='bat'  # with pager
 fi
 
+# aa: テキストをアスキーアートで大きく表示（日本語対応・ターミナル幅自動調整）
+# 依存: python3, pillow (pip install pillow)
+# フォント: macOS ヒラギノ角ゴシック W6
+aa() {
+  if [[ -z "$1" ]]; then
+    echo "Usage: aa <text>"
+    return 1
+  fi
+  local cols=$(tput cols)
+  python3 -c "
+from PIL import Image, ImageDraw, ImageFont
+import sys
+
+text = sys.argv[1]
+max_width = int(sys.argv[2]) // 2  # '██'が2文字幅のため半分
+font_path = '/System/Library/Fonts/ヒラギノ角ゴシック W6.ttc'
+
+# ターミナル幅に収まるようフォントサイズを算出（8〜20px）
+base_size = 20
+font = ImageFont.truetype(font_path, base_size)
+bbox = font.getbbox(text)
+text_width = bbox[2] - bbox[0]
+if text_width > 0:
+    size = max(8, min(base_size, int(base_size * max_width / text_width)))
+    if size != base_size:
+        font = ImageFont.truetype(font_path, size)
+        bbox = font.getbbox(text)
+
+# テキストを画像に描画し、ピクセルをブロック文字に変換
+pad = 2
+img = Image.new('L', (bbox[2] - bbox[0] + pad * 2, bbox[3] - bbox[1] + pad * 2), 255)
+ImageDraw.Draw(img).text((-bbox[0] + pad, -bbox[1] + pad), text, font=font, fill=0)
+for y in range(img.height):
+    line = ''.join('██' if img.getpixel((x, y)) < 128 else '  ' for x in range(img.width)).rstrip()
+    if line:
+        print(line)
+" "$*" "$cols"
+}
+
 # yazi
 function y() {
   export YAZI_START_DIR="$PWD"
