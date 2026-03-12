@@ -273,6 +273,7 @@ git maintenance start
 
 | キー | モード | 動作 |
 |------|-------|------|
+| `C-j` | i | Insertモードを抜ける（ESC） |
 | `C-s` | n/i | ファイル保存 |
 | `<leader>-` | n | 水平分割 |
 | `<leader>\|` | n | 垂直分割 |

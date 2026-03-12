@@ -21,5 +21,8 @@ map("n", "<S-l>", "<cmd>bnext<cr>", { desc = "Next buffer" })
 map("n", "<leader>tt", "<cmd>terminal<cr>", { desc = "Open terminal" })
 map("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
 
+-- InsertモードでCtrl+jでESC
+map("i", "<C-j>", "<Esc>", { desc = "Exit insert mode" })
+
 -- 検索ハイライトをクリア
 map("n", "<Esc>", "<cmd>nohlsearch<cr>", { desc = "Clear search highlight" })
