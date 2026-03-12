@@ -13,6 +13,9 @@ return {
         comments = { italic = true },
         keywords = { italic = true },
       },
+      on_highlights = function(hl, c)
+        hl.Visual = { bg = "#3b4261" }
+      end,
     },
   },
 

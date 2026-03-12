@@ -5,8 +5,10 @@
 # macOS
 .DS_Store
 
-# iTerm2 color schemes
+# iTerm2
 *.itermcolors
+iterm2/.config/iterm2/AppSupport
+iterm2/.config/iterm2/sockets
 
 # Neovim
 nvim/plugin/
